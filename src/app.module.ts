@@ -6,8 +6,8 @@ import { UserService } from './module/user.module/user.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { bikeController } from './module/bike.module/bike.controller';
 import { BikeService } from './module/bike.module/bike.service';
-import { ReservationController } from './utils/reservations.module/reservations.controller';
-import { ReservationService } from './utils/reservations.module/reservations.service';
+import { ReservationController } from './module/reservations.module/reservations.controller';
+import { ReservationService } from './module/reservations.module/reservations.service';
 
 const ENTITY_PATH = __dirname + '/db/entities/*.entity{.ts,.js}';
 
