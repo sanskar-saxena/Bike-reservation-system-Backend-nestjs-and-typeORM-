@@ -49,6 +49,18 @@ export class UserService {
     }
   }
 
+  async addUser(user) {
+    const newUser = new UserEntity();
+    // const bike = new BikeEntity();
+    newUser.name = user.name;
+    newUser.email = user.email;
+    newUser.password = user.password;
+    newUser.role = user.role;
+
+    await newUser.save();
+    return newUser.toJSON();
+  }
+
   async doUserSignup({
     email,
     password,

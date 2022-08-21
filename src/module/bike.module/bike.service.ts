@@ -35,28 +35,31 @@ export class BikeService {
     }
   }
 
-  async applyFilter(filters, Pno): Promise<Array<BikeEntity>> {
-    let bikes = await this.getBikes(Pno);
+  async applyFilter(filter, Pno): Promise<Array<BikeEntity>> {
+    let [bikes] = await this.getBikes(Pno);
     console.log(bikes);
-    console.log(filters);
-    if (filters.model.length)
-      bikes = bikes.filter((bike) => bike.model === filters.model);
-    if (filters.color.length)
-      bikes = bikes.filter((bike) => bike.color === filters.color);
-    if (filters.location.length)
-      bikes = bikes.filter((bike) => bike.location === filters.location);
-    if (filters.rating)
+    console.log(filter);
+    if (filter.model.length)
+      bikes = bikes.filter((bike) => bike.model === filter.model);
+    if (filter.color.length)
+      bikes = bikes.filter((bike) => bike.color === filter.color);
+    if (filter.location.length)
+      bikes = bikes.filter((bike) => bike.location === filter.location);
+    if (filter.isAvailable === true || filter.isAvailable === false) {
+      bikes = bikes.filter((bike) => bike.isAvailable === filter.isAvailable);
+    }
+    if (filter.avgRating)
       bikes = bikes.filter((bike) => {
-        return parseInt(bike.avgRating) >= filters.rating;
+        return parseInt(bike.avgRating) >= filter.avgRating;
       });
 
-    if (filters.startDate && filters.endDate) {
+    if (filter.startDate && filter.endDate) {
       bikes = bikes.filter(
         (item) =>
-          item.startDate > filters.startDate &&
-          item.startDate < filters.endDate &&
-          item.endDate > filters.startDate &&
-          item.endDate < filters.endDate,
+          item.startDate > filter.startDate &&
+          item.startDate < filter.endDate &&
+          item.endDate > filter.startDate &&
+          item.endDate < filter.endDate,
       );
     }
 
@@ -75,7 +78,7 @@ export class BikeService {
     newBike.startDate = bike.startDate;
     newBike.endDate = bike.endDate;
     newBike.image = bike.image;
-    newBike.avgRating = `${Math.floor(Math.random() * 4 + 1)}`;
+    newBike.avgRating = bike.avgRating;
 
     await newBike.save();
     return newBike.toJSON();

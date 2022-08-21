@@ -69,8 +69,8 @@ export class bikeController {
 
   @UseGuards(AuthGuard)
   @Post('/filters/:Pno')
-  applyFilter(@Auth() auth, @Body() filters, @Param('Pno') Pno: number) {
-    return this.bikeService.applyFilter(filters, Pno);
+  applyFilter(@Auth() auth, @Body() filter, @Param('Pno') Pno: number) {
+    return this.bikeService.applyFilter(filter, Pno);
   }
 
   //   @Get('/bookings/:id')

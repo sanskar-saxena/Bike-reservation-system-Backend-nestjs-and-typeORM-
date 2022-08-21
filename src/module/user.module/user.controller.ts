@@ -79,6 +79,14 @@ export class UserController {
   }
 
   @RoleGuard(ERole.Manager)
+  @UseGuards(AuthGuard)
+  @UsePipes(new JoiValidationPipe(userSignupSchema))
+  @Post('')
+  addUser(@Auth() auth, @Body() user: UserEntity) {
+    return this.userService.addUser(user);
+  }
+
+  @RoleGuard(ERole.Manager)
   @Delete('/:id')
   deleteUser(@Auth() auth, @Param('id') id: number) {
     return this.userService.deleteUser(id);
