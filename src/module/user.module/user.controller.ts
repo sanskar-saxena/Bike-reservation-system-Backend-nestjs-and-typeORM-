@@ -1,3 +1,4 @@
+import { Query, UsePipes } from '@nestjs/common';
 import {
   Body,
   Controller,
@@ -14,7 +15,13 @@ import { UserEntity } from 'src/db/entities/user.entity';
 import { AuthGuard } from 'src/guards/auth.guards';
 import { RoleGuard } from 'src/guards/role.guard';
 import { ERole } from 'src/models/user.models';
+import { JoiValidationPipe } from 'src/pipes/joi-validation.pipe';
 import { Auth, IAuth } from 'src/utils/auth.decorator';
+import {
+  userSigninSchema,
+  userSignupSchema,
+  userUpdateSchema,
+} from './user.schema';
 import { UserService } from './user.service';
 
 @Controller('/users')
@@ -24,9 +31,9 @@ export class UserController {
   // @RoleGuard(ERole.Manager)
   @RoleGuard(ERole.Manager)
   @UseGuards(AuthGuard)
-  @Get('/page/:Pno')
-  getBikes(@Auth() auth, @Param('Pno') Pno: number) {
-    return this.userService.getUsers(Pno);
+  @Get('')
+  getUsers(@Auth() auth, @Query('page') page: number) {
+    return this.userService.getUsers(page);
   }
 
   @RoleGuard(ERole.Manager)
@@ -37,6 +44,7 @@ export class UserController {
   }
 
   @Post('/login')
+  @UsePipes(new JoiValidationPipe(userSigninSchema))
   doUserLogin(
     @Body() { email, password }: { email: string; password: string },
   ) {
@@ -44,15 +52,27 @@ export class UserController {
   }
 
   @Post('/signup')
+  @UsePipes(new JoiValidationPipe(userSignupSchema))
   doUserSignup(
     @Body()
-    { email, password, role }: { email: string; password: string; role: ERole },
+    {
+      email,
+      password,
+      name,
+      role,
+    }: {
+      email: string;
+      password: string;
+      name: string;
+      role: ERole;
+    },
   ) {
-    return this.userService.doUserSignup({ email, password, role });
+    return this.userService.doUserSignup({ email, password, name, role });
   }
 
   @RoleGuard(ERole.Manager)
   @UseGuards(AuthGuard)
+  @UsePipes(new JoiValidationPipe(userUpdateSchema))
   @Patch('/:id')
   editUser(@Auth() auth, @Param('id') id: number, @Body() user) {
     return this.userService.editUser({ id, user });

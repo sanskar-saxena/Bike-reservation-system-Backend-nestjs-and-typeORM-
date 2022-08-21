@@ -24,9 +24,6 @@ export class UserService {
     const indexOfLastItem = Math.min(parseInt(currentPage) * 9, data.length);
     const indexOfFirstItem = 9 * (currentPage - 1);
     data = data.slice(indexOfFirstItem, indexOfLastItem);
-    console.log('yhaaa');
-    console.log(currentPage);
-    console.log(data);
     return [data, count];
   }
 
@@ -44,8 +41,8 @@ export class UserService {
       const token = JwtUtil.getJwtToken(user);
 
       return {
-        ...user.toJSON(),
-        jwt: token,
+        user: user.toJSON(),
+        accesstoken: token,
       };
     } else {
       throw new HttpException('Email or password not matched', 400);
@@ -55,15 +52,18 @@ export class UserService {
   async doUserSignup({
     email,
     password,
+    name,
     role,
   }: {
     email: string;
     password: string;
+    name: string;
     role: ERole;
   }) {
     const user = new UserEntity();
     user.email = email;
     user.password = Bcrypt.hashSync(password, 10);
+    user.name = name;
     user.role = role;
     await user.save();
     // return user.toJSON();
