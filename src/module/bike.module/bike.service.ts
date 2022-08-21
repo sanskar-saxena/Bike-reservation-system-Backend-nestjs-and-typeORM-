@@ -35,8 +35,8 @@ export class BikeService {
     }
   }
 
-  async applyFilter(filters): Promise<Array<BikeEntity>> {
-    let bikes = await BikeEntity.find({ where: {} });
+  async applyFilter(filters, Pno): Promise<Array<BikeEntity>> {
+    let bikes = await this.getBikes(Pno);
     console.log(bikes);
     console.log(filters);
     if (filters.model.length)
