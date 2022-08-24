@@ -29,16 +29,15 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   // @RoleGuard(ERole.Manager)
-  @RoleGuard(ERole.Manager)
   @UseGuards(AuthGuard)
-  @Get('')
-  getUsers(@Auth() auth, @Query('page') page: number) {
-    return this.userService.getUsers(page);
+  @Get('/:Pno')
+  getUsers(@Auth() auth, @Param('Pno') Pno: number) {
+    return this.userService.getUsers(Pno);
   }
 
   @RoleGuard(ERole.Manager)
   @UseGuards(AuthGuard)
-  @Get('/:id')
+  @Get('/page/:id')
   getUser(@Auth() auth, @Param('id') id: number) {
     return this.userService.getUser(id);
   }
@@ -72,15 +71,13 @@ export class UserController {
 
   @RoleGuard(ERole.Manager)
   @UseGuards(AuthGuard)
-  @UsePipes(new JoiValidationPipe(userUpdateSchema))
   @Patch('/:id')
-  editUser(@Auth() auth, @Param('id') id: number, @Body() user) {
+  editUser(@Auth() auth, @Param('id') id: number, @Body() user: UserEntity) {
     return this.userService.editUser({ id, user });
   }
 
   @RoleGuard(ERole.Manager)
   @UseGuards(AuthGuard)
-  @UsePipes(new JoiValidationPipe(userSignupSchema))
   @Post('')
   addUser(@Auth() auth, @Body() user: UserEntity) {
     return this.userService.addUser(user);

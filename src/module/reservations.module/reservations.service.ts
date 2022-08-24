@@ -19,50 +19,45 @@ export class ReservationService {
     return 'Hello World!';
   }
 
-  async reserveBike(bike) {
+  async reserveBike(reservation) {
     const newRes = new ReservationEntity();
-    // const bike = new BikeEntity();
-    newRes.bikeId = bike.bikeId;
-    newRes.startDate = bike.startDate;
-    newRes.endDate = bike.endDate;
-    newRes.userId = bike.userId;
+    newRes.bikeId = reservation.bikeId;
+    newRes.startDate = reservation.startDate;
+    newRes.endDate = reservation.endDate;
+    newRes.userId = reservation.userId;
+    newRes.status = reservation.status;
     await newRes.save();
     return newRes.toJSON();
   }
 
   async getAllReservations(currentPage): Promise<Array<any>> {
     let data = await ReservationEntity.find({ where: {} });
-    const count = Math.ceil(data.length / 9);
+    const count = data.length;
     const indexOfLastItem = Math.min(parseInt(currentPage) * 9, data.length);
     const indexOfFirstItem = 9 * (currentPage - 1);
     data = data.slice(indexOfFirstItem, indexOfLastItem);
-    console.log('yhaaa');
-    console.log(currentPage);
-    console.log(data);
     return [data, count];
   }
 
   async getBikesReservations(currentPage, bikeId): Promise<Array<any>> {
     let data = await ReservationEntity.find({ where: { bikeId } });
-    const count = Math.ceil(data.length / 9);
+    const count = data.length;
     const indexOfLastItem = Math.min(parseInt(currentPage) * 9, data.length);
     const indexOfFirstItem = 9 * (currentPage - 1);
     data = data.slice(indexOfFirstItem, indexOfLastItem);
-    console.log('yhaaa');
-    console.log(currentPage);
-    console.log(data);
     return [data, count];
   }
 
-  async getUsersReservations(currentPage, userId): Promise<Array<any>> {
-    let data = await ReservationEntity.find({ where: { userId } });
-    const count = Math.ceil(data.length / 9);
-    const indexOfLastItem = Math.min(parseInt(currentPage) * 9, data.length);
-    const indexOfFirstItem = 9 * (currentPage - 1);
-    data = data.slice(indexOfFirstItem, indexOfLastItem);
-    console.log('yhaaa');
-    console.log(currentPage);
-    console.log(data);
-    return [data, count];
+  async getUsersReservations(userId): Promise<Array<any>> {
+    const data = await ReservationEntity.find({ where: { userId } });
+    if (data) {
+      return data;
+    } else {
+      throw new HttpException('Not found', 400);
+    }
+  }
+
+  async cancelBike({ id, status }) {
+    return ReservationEntity.update(id, status);
   }
 }

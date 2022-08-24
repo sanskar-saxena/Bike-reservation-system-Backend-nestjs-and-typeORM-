@@ -20,10 +20,12 @@ export class UserService {
 
   async getUsers(currentPage): Promise<Array<any>> {
     let data = await UserEntity.find({ where: {} });
-    const count = Math.ceil(data.length / 9);
+    const count = data.length;
     const indexOfLastItem = Math.min(parseInt(currentPage) * 9, data.length);
     const indexOfFirstItem = 9 * (currentPage - 1);
-    data = data.slice(indexOfFirstItem, indexOfLastItem);
+    if (indexOfFirstItem <= indexOfLastItem) {
+      data = data.slice(indexOfFirstItem, indexOfLastItem);
+    }
     return [data, count];
   }
 
@@ -42,7 +44,7 @@ export class UserService {
 
       return {
         user: user.toJSON(),
-        accesstoken: token,
+        accessToken: token,
       };
     } else {
       throw new HttpException('Email or password not matched', 400);
@@ -51,10 +53,9 @@ export class UserService {
 
   async addUser(user) {
     const newUser = new UserEntity();
-    // const bike = new BikeEntity();
     newUser.name = user.name;
     newUser.email = user.email;
-    newUser.password = user.password;
+    newUser.password = Bcrypt.hashSync(user.password, 10);
     newUser.role = user.role;
 
     await newUser.save();

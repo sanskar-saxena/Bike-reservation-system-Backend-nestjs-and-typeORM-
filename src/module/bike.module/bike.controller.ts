@@ -21,11 +21,11 @@ import { BikeService } from './bike.service';
 export class bikeController {
   constructor(private readonly bikeService: BikeService) {}
 
-  @UseGuards(AuthGuard)
-  @Get('/page/:Pno')
-  getBikes(@Auth() auth, @Param('Pno') Pno: number) {
-    return this.bikeService.getBikes(Pno);
-  }
+  // @UseGuards(AuthGuard)
+  // @Get('/page/:Pno')
+  // getBikes(@Auth() auth, @Param('Pno') Pno: number) {
+  //   return this.bikeService.getBikes(Pno);
+  // }
 
   @UseGuards(AuthGuard)
   @Get('/:id')
@@ -39,19 +39,6 @@ export class bikeController {
   addBike(@Auth() auth, @Body() bike: BikeEntity) {
     return this.bikeService.addBike(bike);
   }
-
-  //   @UseGuards(AuthGuard)
-  //   @Put('/:id')
-  //   reserveBike(@Auth() auth, @Param('id') id: number, @Body() item) {
-  //     console.log(item);
-  //     return this.bikeService.reserveBike({ id, item });
-  //   }
-
-  //   @Put('/cancel/:id')
-  //   cancelBike(@Auth() auth, @Param('id') id: number, @Body() bike) {
-  //     console.log(bike);
-  //     return this.bikeService.cancelBike({ id, bike });
-  //   }
 
   @RoleGuard(ERole.Manager)
   @UseGuards(AuthGuard)
@@ -68,13 +55,8 @@ export class bikeController {
   }
 
   @UseGuards(AuthGuard)
-  @Post('/filters/:Pno')
+  @Post('/page/:Pno')
   applyFilter(@Auth() auth, @Body() filter, @Param('Pno') Pno: number) {
     return this.bikeService.applyFilter(filter, Pno);
   }
-
-  //   @Get('/bookings/:id')
-  //   getUserBookings(@Param('id') id: number) {
-  //     return this.bikeService.getUserbookings(id);
-  //   }
 }

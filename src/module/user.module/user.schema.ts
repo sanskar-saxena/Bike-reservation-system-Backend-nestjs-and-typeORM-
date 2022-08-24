@@ -4,7 +4,6 @@ export const userSignupSchema = joi.object({
   name: joi
     .string()
     .min(3)
-    .max(30)
     .error(new Error('full name must be at least 3 characters'))
     .required(),
   email: joi.string().email().error(new Error('Email is Invalid')).required(),

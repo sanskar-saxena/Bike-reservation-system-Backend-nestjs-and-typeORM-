@@ -22,8 +22,10 @@ export class AuthGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
+    console.log(request);
     try {
-      const token = request.headers.jwt;
+      const token = request.headers.authorization.split(' ')[1];
+      console.log(token);
       const { _id } = jwt.verify(token, 'secret') as JwtPayload;
       const id = _id;
       const user = await UserEntity.findOne({ where: { id } });
@@ -32,6 +34,7 @@ export class AuthGuard implements CanActivate {
       }
       return this.isRolesAllowed(user, context);
     } catch (e) {
+      console.log(e);
       throw new UnauthorizedException();
     }
   }
