@@ -1,4 +1,3 @@
-import { IUser } from 'src/models/user.models';
 import * as jwt from 'jsonwebtoken';
 import { UserEntity } from 'src/db/entities/user.entity';
 

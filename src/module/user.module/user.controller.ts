@@ -7,21 +7,15 @@ import {
   Param,
   Patch,
   Post,
-  Put,
   UseGuards,
 } from '@nestjs/common';
-import { DEFAULT_FACTORY_CLASS_METHOD_KEY } from '@nestjs/common/module-utils/constants';
 import { UserEntity } from 'src/db/entities/user.entity';
 import { AuthGuard } from 'src/guards/auth.guards';
 import { RoleGuard } from 'src/guards/role.guard';
 import { ERole } from 'src/models/user.models';
 import { JoiValidationPipe } from 'src/pipes/joi-validation.pipe';
-import { Auth, IAuth } from 'src/utils/auth.decorator';
-import {
-  userSigninSchema,
-  userSignupSchema,
-  userUpdateSchema,
-} from './user.schema';
+import { Auth } from 'src/utils/auth.decorator';
+import { userSigninSchema, userSignupSchema } from './user.schema';
 import { UserService } from './user.service';
 
 @Controller('/users')

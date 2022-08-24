@@ -1,14 +1,6 @@
-import {
-  HttpException,
-  Injectable,
-  Param,
-  UnauthorizedException,
-} from '@nestjs/common';
-import { response } from 'express';
-import * as jwt from 'jsonwebtoken';
+import { HttpException, Injectable } from '@nestjs/common';
 import { UserEntity } from 'src/db/entities/user.entity';
 import { ERole } from 'src/models/user.models';
-import { IAuth } from 'src/utils/auth.decorator';
 import JwtUtil from 'src/utils/jwt.util';
 import * as Bcrypt from 'bcryptjs';
 

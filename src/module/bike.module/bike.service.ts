@@ -1,16 +1,5 @@
-import {
-  HttpException,
-  Injectable,
-  Param,
-  UnauthorizedException,
-} from '@nestjs/common';
-import { response } from 'express';
-import * as jwt from 'jsonwebtoken';
-import { IAuth } from 'src/utils/auth.decorator';
-import JwtUtil from 'src/utils/jwt.util';
+import { HttpException, Injectable } from '@nestjs/common';
 import { BikeEntity } from 'src/db/entities/bike.entity';
-import { filter, of } from 'rxjs';
-import { bikeController } from './bike.controller';
 
 @Injectable()
 export class BikeService {
@@ -58,7 +47,6 @@ export class BikeService {
 
   async addBike(bike) {
     const newBike = new BikeEntity();
-    // const bike = new BikeEntity();
     newBike.model = bike.model;
     newBike.color = bike.color;
     newBike.location = bike.location;
