@@ -3,6 +3,8 @@ import { UserEntity } from 'src/db/entities/user.entity';
 import { ERole } from 'src/models/user.models';
 import JwtUtil from 'src/utils/jwt.util';
 import * as Bcrypt from 'bcryptjs';
+import { ReservationEntity } from 'src/db/entities/reservations.entity';
+import { createQueryBuilder } from 'typeorm';
 
 @Injectable()
 export class UserService {
@@ -80,6 +82,8 @@ export class UserService {
   }
 
   async deleteUser(id) {
+    const data = await ReservationEntity.find({ where: { userId: id } });
+    ReservationEntity.remove(data);
     UserEntity.delete(id);
     return this.getUsers(1);
   }
