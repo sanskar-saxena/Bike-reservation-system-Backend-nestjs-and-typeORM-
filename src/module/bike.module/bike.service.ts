@@ -14,11 +14,11 @@ export class BikeService {
   async applyFilter(filter, Pno): Promise<Array<any>> {
     let bikes = await BikeEntity.find({ where: {} });
     if (filter.model && filter.model !== '')
-      bikes = bikes.filter((bike) => bike.model === filter.model);
+      bikes = bikes.filter((bike) => bike.model === filter.model.trim());
     if (filter.color && filter.color !== '')
-      bikes = bikes.filter((bike) => bike.color === filter.color);
+      bikes = bikes.filter((bike) => bike.color === filter.color.trim());
     if (filter.location && filter.location !== '')
-      bikes = bikes.filter((bike) => bike.location === filter.location);
+      bikes = bikes.filter((bike) => bike.location === filter.location.trim());
     if (filter.isAvailable === true || filter.isAvailable === false) {
       bikes = bikes.filter((bike) => bike.isAvailable === filter.isAvailable);
     }
