@@ -61,7 +61,7 @@ export class BikeService {
   }
 
   async editBike({ id, bike }) {
-    return BikeEntity.update({ id }, { isAvailable: bike.isAvailable });
+    return BikeEntity.update(id, bike);
   }
 
   async deleteBike(id) {
