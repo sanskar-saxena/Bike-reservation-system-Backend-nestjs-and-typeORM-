@@ -80,6 +80,7 @@ export class UserService {
   }
 
   async deleteUser(id) {
-    return UserEntity.delete(id);
+    UserEntity.delete(id);
+    return this.getUsers(1);
   }
 }
