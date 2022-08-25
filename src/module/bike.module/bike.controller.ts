@@ -35,7 +35,7 @@ export class bikeController {
   @RoleGuard(ERole.Manager)
   @UseGuards(AuthGuard)
   @Patch('/:id')
-  editBike(@Auth() auth, @Param('id') id: number, @Body() bike: BikeEntity) {
+  editBike(@Auth() auth, @Param('id') id: number, @Body() bike) {
     return this.bikeService.editBike({ id, bike });
   }
 
