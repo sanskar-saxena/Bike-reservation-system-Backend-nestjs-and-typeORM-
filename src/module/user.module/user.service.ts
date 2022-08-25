@@ -83,8 +83,7 @@ export class UserService {
 
   async deleteUser(id) {
     const data = await ReservationEntity.find({ where: { userId: id } });
-    ReservationEntity.remove(data);
-    UserEntity.delete(id);
-    return this.getUsers(1);
+    ReservationEntity.delete(data);
+    return UserEntity.delete(id);
   }
 }
