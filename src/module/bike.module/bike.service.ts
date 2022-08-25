@@ -1,5 +1,6 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { BikeEntity } from 'src/db/entities/bike.entity';
+import { ReservationEntity } from 'src/db/entities/reservations.entity';
 
 @Injectable()
 export class BikeService {
@@ -65,6 +66,8 @@ export class BikeService {
   }
 
   async deleteBike(id) {
+    const data = await ReservationEntity.find({ where: { bikeId: id } });
+    ReservationEntity.remove(data);
     return BikeEntity.delete(id);
   }
 }
