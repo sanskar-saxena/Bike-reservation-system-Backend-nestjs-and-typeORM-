@@ -15,7 +15,9 @@ export class BikeService {
   async applyFilter(filter, Pno): Promise<Array<any>> {
     let bikes = await BikeEntity.find({ where: {} });
     if (filter.model && filter.model !== '')
-      bikes = bikes.filter((bike) => bike.model.includes(filter.model.trim()));
+      bikes = bikes.filter((bike) =>
+        bike.model.toLowerCase().includes(filter.model.trim().toLowerCase()),
+      );
     if (filter.color && filter.color !== '')
       bikes = bikes.filter((bike) => bike.color === filter.color);
     if (filter.location && filter.location !== '')
