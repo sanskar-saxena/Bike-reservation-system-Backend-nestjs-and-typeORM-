@@ -65,13 +65,16 @@ export class BikeService {
               bikes[i].endDate > filter.startDate &&
               bikes[i].endDate > filter.endDate
             ) {
-              for (let i = 0; i < data.length; i++) {
+              for (let j = 0; i < data.length; j++) {
                 if (
-                  (filter.startDate >= new Date(data[i].startDate) &&
-                    filter.startDate <= new Date(data[i].endDate)) ||
-                  (filter.endDate >= new Date(data[i].startDate) &&
-                    filter.endDate <= new Date(data[i].endDate))
+                  (filter.startDate >= new Date(data[j].startDate) &&
+                    filter.startDate <= new Date(data[j].endDate)) ||
+                  (filter.endDate >= new Date(data[j].startDate) &&
+                    filter.endDate <= new Date(data[j].endDate))
                 ) {
+                  continue;
+                }
+                else{
                   ans.push(bikes[i]);
                 }
               }
