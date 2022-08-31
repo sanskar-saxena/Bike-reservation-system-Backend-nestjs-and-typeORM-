@@ -31,13 +31,55 @@ export class BikeService {
       });
 
     if (filter.startDate && filter.endDate) {
-      bikes = bikes.filter(
-        (item) =>
-          item.startDate < filter.startDate &&
-          item.startDate < filter.endDate &&
-          item.endDate > filter.startDate &&
-          item.endDate > filter.endDate,
-      );
+      const data = await ReservationEntity.find({
+        where: { status: 'BOOKED' },
+      });
+      if (!data) {
+        bikes = bikes.filter(
+          (item) =>
+            item.startDate < filter.startDate &&
+            item.startDate < filter.endDate &&
+            item.endDate > filter.startDate &&
+            item.endDate > filter.endDate,
+        );
+      } else {
+        const ans = [];
+        for (let i = 0; i < bikes.length; i++) {
+          const bikeId = bikes[i].id;
+          const data = await ReservationEntity.find({
+            where: { bikeId, status: 'BOOKED' },
+          });
+          if (!data) {
+            if (
+              bikes[i].startDate < filter.startDate &&
+              bikes[i].startDate < filter.endDate &&
+              bikes[i].endDate > filter.startDate &&
+              bikes[i].endDate > filter.endDate
+            ) {
+              ans.push(bikes[i]);
+            }
+          } else {
+            if (
+              bikes[i].startDate < filter.startDate &&
+              bikes[i].startDate < filter.endDate &&
+              bikes[i].endDate > filter.startDate &&
+              bikes[i].endDate > filter.endDate
+            ) {
+              for (let i = 0; i < data.length; i++) {
+                if (
+                  (filter.startDate >= new Date(data[i].startDate) &&
+                    filter.startDate <= new Date(data[i].endDate)) ||
+                  (filter.endDate >= new Date(data[i].startDate) &&
+                    filter.endDate <= new Date(data[i].endDate))
+                ) {
+                  ans.push(bikes[i]);
+                }
+              }
+            }
+          }
+        }
+        bikes = [...ans];
+      }
     }
     const len = bikes.length;
     const indexOfLastItem = Math.min(Pno * 9, bikes.length);
