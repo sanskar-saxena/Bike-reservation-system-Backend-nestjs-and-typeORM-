@@ -73,8 +73,7 @@ export class BikeService {
                     filter.endDate <= new Date(data[j].endDate))
                 ) {
                   continue;
-                }
-                else{
+                } else {
                   ans.push(bikes[i]);
                 }
               }
