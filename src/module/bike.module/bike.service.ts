@@ -80,7 +80,7 @@ export class BikeService {
             }
           }
         }
-        bikes = [...bikes, ...ans];
+        bikes = [...ans];
       }
     }
     const len = bikes.length;
