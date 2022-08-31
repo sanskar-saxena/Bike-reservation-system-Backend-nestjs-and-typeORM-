@@ -67,10 +67,10 @@ export class BikeService {
             ) {
               for (let j = 0; j < data.length; j++) {
                 if (
-                  (filter.startDate >= new Date(data[j].startDate) &&
-                    filter.startDate <= new Date(data[j].endDate)) ||
-                  (filter.endDate >= new Date(data[j].startDate) &&
-                    filter.endDate <= new Date(data[j].endDate))
+                  (filter.startDate >= new Date(data[j].startDate).getTime() &&
+                    filter.startDate <= new Date(data[j].endDate).getTime()) ||
+                  (filter.endDate >= new Date(data[j].startDate).getTime() &&
+                    filter.endDate <= new Date(data[j].endDate).getTime())
                 ) {
                   continue;
                 } else {
@@ -79,8 +79,8 @@ export class BikeService {
               }
             }
           }
-          bikes = [...ans];
         }
+        bikes = [...ans];
       }
     }
     const len = bikes.length;
