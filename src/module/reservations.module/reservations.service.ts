@@ -8,14 +8,39 @@ export class ReservationService {
   }
 
   async reserveBike(reservation) {
-    const newRes = new ReservationEntity();
-    newRes.bikeId = reservation.bikeId;
-    newRes.startDate = reservation.startDate;
-    newRes.endDate = reservation.endDate;
-    newRes.userId = reservation.userId;
-    newRes.status = reservation.status;
-    await newRes.save();
-    return newRes.toJSON();
+    const bikeId = reservation.bikeId;
+    const data = await ReservationEntity.find({
+      where: { bikeId, status: 'BOOKED' },
+    });
+    if (!data) {
+      const newRes = new ReservationEntity();
+      newRes.bikeId = reservation.bikeId;
+      newRes.startDate = reservation.startDate;
+      newRes.endDate = reservation.endDate;
+      newRes.userId = reservation.userId;
+      newRes.status = reservation.status;
+      await newRes.save();
+      return newRes.toJSON();
+    } else {
+      for (let i = 0; i < data.length; i++) {
+        if (
+          (new Date(reservation.startDate) >= new Date(data[i].startDate) &&
+            new Date(reservation.startDate) <= new Date(data[i].endDate)) ||
+          (new Date(reservation.endDate) >= new Date(data[i].startDate) &&
+            new Date(reservation.endDate) <= new Date(data[i].endDate))
+        ) {
+          throw new HttpException('Cannot Reserve', 400);
+        }
+      }
+      const newRes = new ReservationEntity();
+      newRes.bikeId = reservation.bikeId;
+      newRes.startDate = reservation.startDate;
+      newRes.endDate = reservation.endDate;
+      newRes.userId = reservation.userId;
+      newRes.status = reservation.status;
+      await newRes.save();
+      return newRes.toJSON();
+    }
   }
 
   async getAllReservations(currentPage): Promise<Array<any>> {
