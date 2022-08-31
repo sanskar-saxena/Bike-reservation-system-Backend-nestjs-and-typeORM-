@@ -34,7 +34,7 @@ export class BikeService {
       const data = await ReservationEntity.find({
         where: { status: 'BOOKED' },
       });
-      if (!data) {
+      if (data?.length === 0) {
         bikes = bikes.filter(
           (item) =>
             item.startDate < filter.startDate &&
