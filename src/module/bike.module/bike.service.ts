@@ -1,6 +1,7 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { BikeEntity } from 'src/db/entities/bike.entity';
 import { ReservationEntity } from 'src/db/entities/reservations.entity';
+import { LessThan, MoreThan } from 'typeorm';
 
 @Injectable()
 export class BikeService {
@@ -31,65 +32,41 @@ export class BikeService {
       });
 
     if (filter.startDate && filter.endDate) {
-      let data = await ReservationEntity.find({
+      const data = await ReservationEntity.find({
         where: { status: 'BOOKED' },
       });
       if (data.length === 0) {
-        bikes = bikes.filter(
-          (item) =>
-            item.startDate < filter.startDate &&
-            item.startDate < filter.endDate &&
-            item.endDate > filter.startDate &&
-            item.endDate > filter.endDate,
-        );
+        const item = await BikeEntity.find({
+          where: {
+            startDate: LessThan(filter.startDate) && LessThan(filter.endDate),
+            endDate: MoreThan(filter.startDate) && MoreThan(filter.endDate),
+          },
+        });
+        bikes = [...item];
       } else {
         let ans = [];
         for (let i = 0; i < bikes.length; i++) {
           const bikeId = bikes[i].id;
-          const data = await ReservationEntity.find({
+          let data = await ReservationEntity.find({
             where: { bikeId: bikeId, status: 'BOOKED' },
           });
           if (data.length === 0) {
-            if (
-              bikes[i].startDate < filter.startDate &&
-              bikes[i].startDate < filter.endDate &&
-              bikes[i].endDate > filter.startDate &&
-              bikes[i].endDate > filter.endDate
-            ) {
-              if (
-                !ans.some(
-                  (item) => JSON.stringify(item) === JSON.stringify(bikes[i]),
-                )
-              ) {
-                ans.push(bikes[i]);
-              }
-            }
+            const item = await BikeEntity.find({
+              where: {
+                startDate:
+                  LessThan(filter.startDate) && LessThan(filter.endDate),
+                endDate: MoreThan(filter.startDate) && MoreThan(filter.endDate),
+              },
+            });
+            ans = [...item, ...ans];
           } else {
-            if (
-              bikes[i].startDate < filter.startDate &&
-              bikes[i].startDate < filter.endDate &&
-              bikes[i].endDate > filter.startDate &&
-              bikes[i].endDate > filter.endDate
-            ) {
-              for (let j = 0; j < data.length; j++) {
-                if (
-                  (filter.startDate >= new Date(data[j].startDate).getTime() &&
-                    filter.startDate <= new Date(data[j].endDate).getTime()) ||
-                  (filter.endDate >= new Date(data[j].startDate).getTime() &&
-                    filter.endDate <= new Date(data[j].endDate).getTime())
-                ) {
-                  continue;
-                } else {
-                  if (
-                    !ans.some(
-                      (item) =>
-                        JSON.stringify(item) === JSON.stringify(bikes[i]),
-                    )
-                  ) {
-                    ans.push(bikes[i]);
-                  }
-                }
-              }
+            data = data.filter((res) => {
+              return (
+                new Date(res.startDate).getTime() > filter.endDate || new Date(res.endDate).getTime() < filter.startDate
+              );
+            });
+            if (data) {
+              ans.push(bikes[i]);
             }
           }
         }
