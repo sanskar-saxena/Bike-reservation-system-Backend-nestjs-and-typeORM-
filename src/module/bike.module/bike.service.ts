@@ -61,6 +61,7 @@ export class BikeService {
             });
             ans = [...item, ...ans];
           } else {
+            console.log(data);
             let filterAvailable = [];
             filterAvailable = data.filter((res) => {
               return (
@@ -70,7 +71,7 @@ export class BikeService {
                   new Date(res.endDate).getTime() > filter.endDate)
               );
             });
-            if (filterAvailable.length > 0) {
+            if (filterAvailable.length === data.length) {
               ans.push(bikes[i]);
             }
           }
