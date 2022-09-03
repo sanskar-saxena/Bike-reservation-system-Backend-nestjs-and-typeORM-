@@ -30,9 +30,7 @@ export class ReservationService {
             new Date(reservation.endDate) <= new Date(data[i].endDate))
         ) {
           throw new HttpException(
-            `Already booked from ${new Date(data[i].startDate)} to ${new Date(
-              data[i].endDate,
-            )}`,
+            `Already booked from ${data[i].startDate} to ${data[i].endDate}`,
             400,
           );
         }
