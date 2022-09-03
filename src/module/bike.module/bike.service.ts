@@ -48,7 +48,7 @@ export class BikeService {
         for (let i = 0; i < bikes.length; i++) {
           // console.log(bikes[i]);
           const bikeId = bikes[i].id;
-          let data = await ReservationEntity.find({
+          const data = await ReservationEntity.find({
             where: { bikeId: bikeId, status: 'BOOKED' },
           });
           if (data.length === 0) {
@@ -63,13 +63,16 @@ export class BikeService {
             // console.log(item);
             ans = [...item, ...ans];
           } else {
-            data = data.filter((res) => {
+            let filterAvailable = [];
+            filterAvailable = data.filter((res) => {
               return (
-                new Date(res.startDate).getTime() > filter.endDate ||
-                new Date(res.endDate).getTime() < filter.startDate
+                (new Date(res.startDate).getTime() < filter.startDate &&
+                  new Date(res.endDate).getTime() < filter.startDate) ||
+                (new Date(res.startDate).getTime() > filter.endDate &&
+                  new Date(res.endDate).getTime() > filter.endDate)
               );
             });
-            if (data) {
+            if (filterAvailable) {
               ans.push(bikes[i]);
             }
           }
