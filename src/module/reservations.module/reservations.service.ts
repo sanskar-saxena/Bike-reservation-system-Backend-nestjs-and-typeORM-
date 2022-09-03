@@ -29,7 +29,12 @@ export class ReservationService {
           (new Date(reservation.endDate) >= new Date(data[i].startDate) &&
             new Date(reservation.endDate) <= new Date(data[i].endDate))
         ) {
-          throw new HttpException('Cannot Reserve', 400);
+          throw new HttpException(
+            `Already booked from ${new Date(data[i].startDate)} to ${new Date(
+              data[i].endDate,
+            )}`,
+            400,
+          );
         }
       }
       const newRes = new ReservationEntity();
