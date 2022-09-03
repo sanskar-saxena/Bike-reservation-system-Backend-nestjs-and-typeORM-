@@ -31,7 +31,7 @@ export class BikeService {
       });
 
     if (filter.startDate && filter.endDate) {
-      const data = await ReservationEntity.find({
+      let data = await ReservationEntity.find({
         where: { status: 'BOOKED' },
       });
       if (data.length === 0) {
@@ -47,17 +47,22 @@ export class BikeService {
         for (let i = 0; i < bikes.length; i++) {
           const bikeId = bikes[i].id;
           const data = await ReservationEntity.find({
-            where: { bikeId, status: 'BOOKED' },
+            where: { bikeId: bikeId, status: 'BOOKED' },
           });
           if (data.length === 0) {
-            // console.log(bikes[i], 'zzzzz');
             if (
               bikes[i].startDate < filter.startDate &&
               bikes[i].startDate < filter.endDate &&
               bikes[i].endDate > filter.startDate &&
               bikes[i].endDate > filter.endDate
             ) {
-              ans.push(bikes[i]);
+              if (
+                !ans.some(
+                  (item) => JSON.stringify(item) === JSON.stringify(bikes[i]),
+                )
+              ) {
+                ans.push(bikes[i]);
+              }
             }
           } else {
             if (
@@ -75,7 +80,14 @@ export class BikeService {
                 ) {
                   continue;
                 } else {
-                  ans.push(bikes[i]);
+                  if (
+                    !ans.some(
+                      (item) =>
+                        JSON.stringify(item) === JSON.stringify(bikes[i]),
+                    )
+                  ) {
+                    ans.push(bikes[i]);
+                  }
                 }
               }
             }
