@@ -67,14 +67,20 @@ export class UserService {
     name: string;
     role: ERole;
   }) {
-    const user = new UserEntity();
-    user.email = email;
-    user.password = Bcrypt.hashSync(password, 10);
-    user.name = name;
-    user.role = role;
-    await user.save();
-    // return user.toJSON();
-    return this.doUserLogin({ email, password });
+    const userExist = await UserEntity.findOne({ where: { email } });
+    if (userExist) {
+      throw new HttpException('Email already exists!', 400);
+    } else {
+      const user = new UserEntity();
+
+      user.email = email;
+      user.password = Bcrypt.hashSync(password, 10);
+      user.name = name;
+      user.role = role;
+      await user.save();
+      // return user.toJSON();
+      return this.doUserLogin({ email, password });
+    }
   }
 
   async editUser({ id, user }) {
